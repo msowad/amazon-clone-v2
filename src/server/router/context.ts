@@ -2,8 +2,8 @@
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 import { Session } from "next-auth";
-import { getServerAuthSession } from "../../server/common/get-server-auth-session";
-import { prisma } from "../db/client";
+import { getServerAuthSession } from "server/common/get-server-auth-session";
+import { prisma } from "server/db/client";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -25,7 +25,7 @@ export const createContextInner = async (opts: CreateContextOptions) => {
  * @link https://trpc.io/docs/context
  **/
 export const createContext = async (
-  opts: trpcNext.CreateNextContextOptions,
+  opts: trpcNext.CreateNextContextOptions
 ) => {
   const { req, res } = opts;
 

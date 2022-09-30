@@ -32,9 +32,10 @@ export const createContext = async (
   // Get the session from the server using the unstable_getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
 
-  return await createContextInner({
-    session,
-  });
+  // return await createContextInner({
+  //   session,
+  // });
+  return { session, req, res, prisma };
 };
 
 type Context = trpc.inferAsyncReturnType<typeof createContext>;

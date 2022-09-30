@@ -1,33 +1,76 @@
-import { FormLayout, Button, Input } from "components";
+import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormLayout, Input, LoadingButton } from "components";
 import Link from "next/link";
+import { useCallback, useState } from "react";
+import { useForm } from "react-hook-form";
+import { trpc } from "utils/trpc";
+import { IRegister, registerSchema } from "utils/validation/auth";
 
 const Register = () => {
+  const [error, setError] = useState("");
+
+  const {
+    register: form,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IRegister>({ resolver: zodResolver(registerSchema) });
+  const { mutateAsync: createUser, isLoading } = trpc.useMutation([
+    "auth.register",
+  ]);
+
+  const onSubmit = useCallback(
+    async (data: IRegister) => {
+      setError("");
+      try {
+        const result = await createUser(data);
+        console.log({ result });
+      } catch (e: any) {
+        setError(e.message);
+      }
+    },
+    [createUser]
+  );
+
   return (
     <FormLayout register title="Create a new account">
-      <form className="space-y-4 md:space-y-6" noValidate>
+      <form
+        className="space-y-4 md:space-y-6"
+        noValidate
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Input
-          label="Your name"
           name="name"
+          label="Your name"
           type="text"
           placeholder="John Doe"
+          register={form}
+          autofocus
+          error={errors.name?.message}
         />
         <Input
           label="Your email"
           name="email"
           type="email"
           placeholder="name@company.com"
+          register={form}
+          error={errors.email?.message}
         />
         <Input
           label="Password"
           name="password"
           type="password"
           placeholder="••••••••"
+          register={form}
+          error={errors.password?.message}
         />
         <Input
           label="Confirm Password"
           name="confirmPassword"
           type="password"
           placeholder="••••••••"
+          register={form}
+          error={errors.confirmPassword?.message}
         />
         <div className="flex items-center">
           <div className="flex h-5 items-center">
@@ -53,7 +96,17 @@ const Register = () => {
             </label>
           </div>
         </div>
-        <Button type="submit" label="Create account" />
+        <LoadingButton
+          isLoading={isLoading}
+          type="submit"
+          label="Create account"
+        />
+        {error && (
+          <p className="mt-1 flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white dark:bg-red-400 dark:text-black">
+            <ExclamationCircleIcon width={30} className="mr-2" />
+            {error}
+          </p>
+        )}
         <p className="text-sm font-light text-gray-500 dark:text-gray-400">
           Already have an account{" "}
           <Link href="login" passHref>

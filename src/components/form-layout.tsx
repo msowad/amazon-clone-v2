@@ -14,7 +14,7 @@ const FormLayout: React.FC<Props> = ({ children, title, register }) => {
         <Link href="/" passHref>
           <a
             className={`mb-6 flex items-center ${
-              register ? "pt-20" : ""
+              register ? "md:pt-20" : ""
             } text-2xl font-semibold text-gray-900 dark:text-white`}
           >
             <Image

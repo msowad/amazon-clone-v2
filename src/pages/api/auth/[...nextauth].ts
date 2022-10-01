@@ -1,30 +1,70 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
 
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { verify } from "argon2";
+import Credentials from "next-auth/providers/credentials";
 import { prisma } from "server/db/client";
-import { env } from "env/server.mjs";
+import { loginSchema } from "utils/validation/auth";
 
 export const authOptions: NextAuthOptions = {
-  // Include user.id on session
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    Credentials({
+      id: "credentials",
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: async (credentials) => {
+        const { email, password } = await loginSchema.parseAsync(credentials);
+
+        const user = await prisma.user.findFirst({
+          where: { email },
+        });
+        if (!user) {
+          throw new Error("Enter valid email and password");
+        }
+
+        const isValidPassword = await verify(user.password, password);
+        if (!isValidPassword) {
+          throw new Error("Enter valid email and password");
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        };
+      },
+    }),
+  ],
   callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token = user;
+      }
+
+      return token;
+    },
+    session: async ({ session, token }) => {
+      if (token) {
+        session.user = token;
       }
       return session;
     },
   },
-  // Configure one or more authentication providers
-  adapter: PrismaAdapter(prisma),
-  providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
-    // ...add more providers here
-  ],
+  jwt: {
+    maxAge: 15 * 24 * 60 * 60, //15 days,
+  },
+  session: {
+    strategy: "jwt",
+  },
+  pages: {
+    signIn: "/login",
+    newUser: "/register",
+  },
 };
 
 export default NextAuth(authOptions);

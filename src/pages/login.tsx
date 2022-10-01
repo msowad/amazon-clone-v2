@@ -1,4 +1,3 @@
-import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormLayout, Input, LoadingButton } from "components";
 import { signIn, SignInResponse } from "next-auth/react";
@@ -6,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { IoAlertCircle } from "react-icons/io5";
 import { ILogin, loginSchema } from "utils/validation/auth";
 
 const Login = () => {
@@ -90,7 +90,7 @@ const Login = () => {
         <LoadingButton isLoading={isLoading} type="submit" label="Sign in" />
         {error && (
           <p className="mt-1 flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white dark:bg-red-400 dark:text-black">
-            <ExclamationCircleIcon width={30} className="mr-2" />
+            <IoAlertCircle width={30} className="mr-2" />
             {error}
           </p>
         )}

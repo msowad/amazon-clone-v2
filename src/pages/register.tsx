@@ -1,4 +1,4 @@
-import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
+import { IoAlertCircle } from "react-icons/io5";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormLayout, Input, LoadingButton } from "components";
 import Link from "next/link";
@@ -103,7 +103,7 @@ const Register = () => {
         />
         {error && (
           <p className="mt-1 flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white dark:bg-red-400 dark:text-black">
-            <ExclamationCircleIcon width={30} className="mr-2" />
+            <IoAlertCircle width={30} className="mr-2" />
             {error}
           </p>
         )}

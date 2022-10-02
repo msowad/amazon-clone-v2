@@ -9,3 +9,4 @@ export { default as FeaturedProducts } from "./featured-products";
 export { default as ProductCard } from "./product-card";
 export { default as IconButton } from "./icon-button";
 export { default as ProductCarousel } from "./product-carousel";
+export { default as SubBanner } from "./sub-banner";

@@ -1,35 +1,61 @@
-import { IoAlertCircle } from "react-icons/io5";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormLayout, Input, LoadingButton } from "components";
+import { signIn, SignInResponse } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { IoAlertCircle } from "react-icons/io5";
+import { guestRoute } from "utils/middleware/guestRoute";
 import { trpc } from "utils/trpc";
 import { IRegister, registerSchema } from "utils/validation/auth";
 
+export const getServerSideProps = guestRoute(async () => {
+  return { props: {} };
+});
+
 const Register = () => {
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+  const { callbackUrl } = router.query;
 
   const {
     register: form,
     handleSubmit,
     formState: { errors },
   } = useForm<IRegister>({ resolver: zodResolver(registerSchema) });
-  const { mutateAsync: createUser, isLoading } = trpc.useMutation([
-    "auth.register",
-  ]);
+  const { mutateAsync: createUser } = trpc.useMutation(["auth.register"]);
 
   const onSubmit = useCallback(
     async (data: IRegister) => {
       setError("");
+      setIsLoading(true);
       try {
         const result = await createUser(data);
-        console.log({ result });
+        if (result.status === 201) {
+          const signInResult: SignInResponse | undefined = await signIn(
+            "credentials",
+            {
+              redirect: false,
+              ...data,
+            }
+          );
+          if (signInResult?.status === 200) {
+            return router.push(callbackUrl?.toString() ?? "/");
+          }
+          setError(
+            signInResult?.error ??
+              "Somethings went wrong. Please try again later"
+          );
+        }
       } catch (e: any) {
         setError(e.message);
       }
+      setIsLoading(false);
     },
-    [createUser]
+    [createUser, callbackUrl, router]
   );
 
   return (

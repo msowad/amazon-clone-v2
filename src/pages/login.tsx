@@ -6,7 +6,12 @@ import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoAlertCircle } from "react-icons/io5";
+import { guestRoute } from "utils/middleware/guestRoute";
 import { ILogin, loginSchema } from "utils/validation/auth";
+
+export const getServerSideProps = guestRoute(async () => {
+  return { props: {} };
+});
 
 const Login = () => {
   const [error, setError] = useState("");

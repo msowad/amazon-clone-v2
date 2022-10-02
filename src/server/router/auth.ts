@@ -21,6 +21,6 @@ export const authRouter = createRouter().mutation("register", {
       data: { name, email, password: hashedPassword },
     });
 
-    return { status: 201, data: { id: newUser.id, email, password } };
+    return { status: 201, data: { email, password } };
   },
 });

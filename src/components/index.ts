@@ -5,3 +5,7 @@ export { default as FormLayout } from "./form-layout";
 export { default as Header } from "./header";
 export { default as NavLink } from "./nav-link";
 export { default as Carousel } from "./carousel";
+export { default as FeaturedProducts } from "./featured-products";
+export { default as ProductCard } from "./product-card";
+export { default as IconButton } from "./icon-button";
+export { default as ProductCarousel } from "./product-carousel";

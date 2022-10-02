@@ -1,7 +1,6 @@
 import {
   Breadcrumb,
   Button,
-  Input,
   Layout,
   ProductImages,
   RelatedProducts,
@@ -38,7 +37,7 @@ export default function App() {
             <div className="p-1" />
             <h3 className="font-bold">In stock</h3>
             <div className="p-2" />
-            <p className="text-sm font-medium text-gray-300">
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem
               necessitatibus magnam officia laudantium quae, amet nesciunt totam
               hic perferendis, odit optio quisquam et, quibusdam quo dignissimos
@@ -74,10 +73,10 @@ export default function App() {
         <hr className="border-gray-500" />
         <div className="p-4" />
         <div className="container">
-          <div className="rounded bg-gray-800 p-4">
+          <div className="rounded bg-gray-300 p-4 dark:bg-gray-800">
             <h1 className="text-xl font-bold">Description</h1>
             <div className="p-1" />
-            <p className="text-sm font-medium text-gray-300">
+            <p className="text-sm font-medium text-gray-800 dark:text-gray-300">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nisi a
               fugiat quam temporibus suscipit, dolore rerum odio autem aperiam
               sed, nostrum, consectetur nihil velit recusandae dolorem. Fugit
@@ -93,7 +92,7 @@ export default function App() {
             </p>
           </div>
           <div className="p-4" />
-          <div className="rounded bg-gray-800 p-4">
+          <div className="rounded bg-gray-300 p-4 dark:bg-gray-800">
             {"You're reviewing"} <br />
             <span className="font-semibold">Logitech Headphone</span>
           </div>

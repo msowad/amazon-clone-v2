@@ -20,7 +20,7 @@ const ProductCard: React.FC<Props> = ({ image }) => {
             ))}
           </div>
           <div className="p-1" />
-          <h1 className="text-gray-300">Lorem ipsum</h1>
+          <h1 className="text-gray-800 dark:text-gray-300">Lorem ipsum</h1>
           <h2 className="text-base font-semibold">$50.3</h2>
         </a>
       </Link>

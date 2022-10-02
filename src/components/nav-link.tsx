@@ -15,8 +15,10 @@ const NavLink: React.FC<Props> = ({ label, href }) => {
       <Link passHref href={href}>
         <a
           className={`${
-            isActive ? "bg-primary-700 lg:text-primary-700" : ""
-          } block rounded py-2 pr-4 pl-3 text-white dark:text-white lg:bg-transparent lg:p-0`}
+            isActive
+              ? "bg-primary-700 text-white hover:bg-primary-800 lg:text-primary-700 lg:hover:bg-transparent"
+              : "hover:bg-gray-200 dark:hover:bg-gray-700 lg:text-gray-700 lg:hover:bg-transparent lg:hover:text-primary-700 dark:lg:text-gray-300"
+          } block rounded py-2 pr-4 pl-3 dark:text-white lg:bg-transparent lg:p-0`}
           aria-current="page"
         >
           {label}

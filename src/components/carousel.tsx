@@ -53,7 +53,7 @@ const Arrow = ({ prev }: { prev?: boolean }) => (
     <button
       className={`${
         prev ? "hero-carousel-navigation-prev" : "hero-carousel-navigation-next"
-      } bg-primary-500 p-1 hover:bg-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-900 sm:p-3 md:p-4`}
+      } bg-primary-500 p-1 text-white hover:bg-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-900 sm:p-3 md:p-4`}
     >
       {prev ? (
         <FaLongArrowAltLeft className="text-sm sm:text-lg md:text-xl lg:text-3xl" />

@@ -10,7 +10,7 @@ interface Props {
 const ProductCard: React.FC<Props> = ({ image }) => {
   return (
     <div className="group relative">
-      <Link href="/" passHref>
+      <Link href="/products/product" passHref>
         <a className="text-center">
           <Image src={image} alt="product" width={360} height={420} />
           <div className="p-2" />

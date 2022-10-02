@@ -14,3 +14,5 @@ export { default as NewProducts } from "./new-products";
 export { default as BrandCarousel } from "./brand-carousel";
 export { default as Footer } from "./footer";
 export { default as Layout } from "./layout";
+export { default as Breadcrumb } from "./breadcrumb";
+export { default as ProductImages } from "./product-images";

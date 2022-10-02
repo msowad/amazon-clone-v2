@@ -1,4 +1,11 @@
-import { Carousel, FeaturedProducts, Header, SubBanner } from "components";
+import {
+  BrandCarousel,
+  Carousel,
+  FeaturedProducts,
+  Header,
+  NewProducts,
+  SubBanner,
+} from "components";
 
 const Index = () => {
   return (
@@ -9,6 +16,10 @@ const Index = () => {
       <FeaturedProducts />
       <div className="py-10" />
       <SubBanner />
+      <div className="py-10" />
+      <NewProducts />
+      <div className="py-10" />
+      <BrandCarousel />
       <div className="py-10" />
     </main>
   );

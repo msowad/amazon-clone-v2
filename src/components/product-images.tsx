@@ -18,7 +18,7 @@ const ProductImages: React.FC<Props> = ({ images }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   return (
-    <div>
+    <>
       <div className="relative">
         <Swiper
           loop={true}
@@ -82,7 +82,7 @@ const ProductImages: React.FC<Props> = ({ images }) => {
         <Arrow prev className="thumbs-left" />
         <Arrow className="thumbs-right" />
       </div>
-    </div>
+    </>
   );
 };
 

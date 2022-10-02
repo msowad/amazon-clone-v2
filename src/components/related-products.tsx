@@ -9,11 +9,11 @@ const images = [
   "/assets/products/5.jpg",
 ];
 
-const FeaturedProducts: React.FC = () => {
+const RelatedProducts: React.FC = () => {
   return (
     <section className="container relative">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold md:text-2xl">Featured Product</h1>
+        <h1 className="text-xl font-bold md:text-2xl">Related Products</h1>
         <div className="flex items-center space-x-4">
           <button className="navigation-prev p-1 focus:outline-none">
             <FaArrowLeft />
@@ -29,4 +29,4 @@ const FeaturedProducts: React.FC = () => {
   );
 };
 
-export default FeaturedProducts;
+export default RelatedProducts;

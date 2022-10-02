@@ -2,15 +2,14 @@ import {
   BrandCarousel,
   Carousel,
   FeaturedProducts,
-  Header,
+  Layout,
   NewProducts,
   SubBanner,
 } from "components";
 
 const Index = () => {
   return (
-    <main>
-      <Header />
+    <Layout>
       <Carousel />
       <div className="py-10" />
       <FeaturedProducts />
@@ -21,7 +20,7 @@ const Index = () => {
       <div className="py-10" />
       <BrandCarousel />
       <div className="py-10" />
-    </main>
+    </Layout>
   );
 };
 

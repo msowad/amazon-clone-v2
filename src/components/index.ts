@@ -12,3 +12,5 @@ export { default as ProductCarousel } from "./product-carousel";
 export { default as SubBanner } from "./sub-banner";
 export { default as NewProducts } from "./new-products";
 export { default as BrandCarousel } from "./brand-carousel";
+export { default as Footer } from "./footer";
+export { default as Layout } from "./layout";

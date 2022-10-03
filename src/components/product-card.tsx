@@ -2,6 +2,7 @@ import { IconButton } from "components";
 import Image from "next/image";
 import Link from "next/link";
 import { FaHeart, FaShoppingCart, FaStar } from "react-icons/fa";
+import { productImageProps } from "utils/product-image-props";
 
 interface Props {
   image: string;
@@ -12,14 +13,7 @@ const ProductCard: React.FC<Props> = ({ image }) => {
     <div className="group relative">
       <Link href="/products/product" passHref>
         <a className="text-center">
-          <Image
-            src={image}
-            alt="product"
-            width="100%"
-            height="125%"
-            layout="responsive"
-            objectFit="cover"
-          />
+          <Image src={image} alt="product" {...productImageProps} />
           <div className="p-2" />
           <div className="flex items-center justify-center space-x-2">
             {[1, 2, 3, 4, 5].map((n, i) => (

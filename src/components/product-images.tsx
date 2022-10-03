@@ -9,6 +9,7 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { productImageProps } from "utils/product-image-props";
 
 interface Props {
   images: string[];
@@ -36,14 +37,7 @@ const ProductImages: React.FC<Props> = ({ images }) => {
         >
           {images.map((item, i) => (
             <SwiperSlide key={i}>
-              <Image
-                src={item}
-                alt="banner"
-                width="100%"
-                height="100%"
-                layout="responsive"
-                objectFit="cover"
-              />
+              <Image src={item} alt="banner" {...productImageProps} />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -68,14 +62,7 @@ const ProductImages: React.FC<Props> = ({ images }) => {
         >
           {images.map((item, i) => (
             <SwiperSlide key={i}>
-              <Image
-                src={item}
-                alt="banner"
-                width="100%"
-                height="100%"
-                layout="responsive"
-                objectFit="cover"
-              />
+              <Image src={item} alt="banner" {...productImageProps} />
             </SwiperSlide>
           ))}
         </Swiper>

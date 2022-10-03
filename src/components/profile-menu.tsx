@@ -33,9 +33,9 @@ const ProfileMenu: React.FC<Props> = ({ session }) => {
               height={32}
               className="mr-3 rounded-full"
             />
-            <div className="ml-2 hidden max-w-[6rem] items-center sm:flex">
-              <h6 className="truncate">Bonnie Green lorem ipsum lorem ipsum</h6>
-              <MdArrowForwardIos className="ml-1 rotate-90" size={40} />
+            <div className="ml-2 hidden items-center sm:flex">
+              <h6 className="max-w-[6rem] truncate">{session.user?.name}</h6>
+              <MdArrowForwardIos className="ml-1 rotate-90 text-lg" />
             </div>
           </Menu.Button>
         </div>
@@ -48,36 +48,48 @@ const ProfileMenu: React.FC<Props> = ({ session }) => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 z-20 mt-2 w-56 max-w-xs origin-top-right rounded-md bg-gray-300 shadow-lg focus:outline-none dark:bg-gray-700">
+          <Menu.Items className="absolute right-0 z-20 mt-2 min-w-[14rem] max-w-xs origin-top-right rounded-md bg-gray-300 shadow-lg focus:outline-none dark:bg-gray-700">
             <div className="truncate p-3">
               <h1 className="text-sm font-semibold">{session.user?.name}</h1>
-              <h1 className="text-lg font-bold">{session.user?.email}</h1>
+              <h1 className="font-bold">{session.user?.email}</h1>
             </div>
             <hr className="border-gray-500" />
             <div className="py-2">
-              <Menu.Item as={Link} href="/" passHref>
-                <a
-                  className={`flex w-full items-center px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600`}
-                >
-                  <FaUserCircle className="mr-2" />
-                  Profile
-                </a>
+              <Menu.Item>
+                <>
+                  <Link href="/" passHref>
+                    <a
+                      className={`flex w-full items-center px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600`}
+                    >
+                      <FaUserCircle className="mr-2" />
+                      Profile
+                    </a>
+                  </Link>
+                </>
               </Menu.Item>
-              <Menu.Item as={Link} href="/" passHref>
-                <a
-                  className={`flex w-full items-center px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600`}
-                >
-                  <MdDashboard className="mr-2" />
-                  Dashboard
-                </a>
+              <Menu.Item>
+                <>
+                  <Link href="/" passHref>
+                    <a
+                      className={`flex w-full items-center px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600`}
+                    >
+                      <MdDashboard className="mr-2" />
+                      Dashboard
+                    </a>
+                  </Link>
+                </>
               </Menu.Item>
-              <Menu.Item as={Link} href="/" passHref>
-                <a
-                  className={`flex w-full items-center px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600`}
-                >
-                  <MdLocalShipping className="mr-2" />
-                  My Order
-                </a>
+              <Menu.Item>
+                <>
+                  <Link href="/" passHref>
+                    <a
+                      className={`flex w-full items-center px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600`}
+                    >
+                      <MdLocalShipping className="mr-2" />
+                      My Order
+                    </a>
+                  </Link>
+                </>
               </Menu.Item>
               <Menu.Item>
                 <button

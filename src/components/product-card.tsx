@@ -12,7 +12,14 @@ const ProductCard: React.FC<Props> = ({ image }) => {
     <div className="group relative">
       <Link href="/products/product" passHref>
         <a className="text-center">
-          <Image src={image} alt="product" width={360} height={420} />
+          <Image
+            src={image}
+            alt="product"
+            width="100%"
+            height="125%"
+            layout="responsive"
+            objectFit="cover"
+          />
           <div className="p-2" />
           <div className="flex items-center justify-center space-x-2">
             {[1, 2, 3, 4, 5].map((n, i) => (

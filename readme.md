@@ -3,5 +3,6 @@ TODO:
   -[*] authentication
   -[*] home page
   -[*] details page
-  -[] products page
+  -[*] products page
+  -[] dashboard
   -[] create product

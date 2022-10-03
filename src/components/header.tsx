@@ -1,10 +1,12 @@
+import { LoadingIcon, NavLink, ProfileMenu } from "components";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { BiMenu } from "react-icons/bi";
-import NavLink from "./nav-link";
 
 const Header: React.FC = ({}) => {
+  const { data: session, status } = useSession();
   const [isShowingMobile, setIsShowingMobile] = useState(false);
 
   return (
@@ -23,11 +25,15 @@ const Header: React.FC = ({}) => {
             </a>
           </Link>
           <div className="flex items-center justify-end lg:order-2">
-            <Link href="/login" passHref>
-              <a className="text-md mr-2 rounded-lg bg-primary-700 px-4 py-2 font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 lg:px-5 lg:py-2.5">
-                Login
-              </a>
-            </Link>
+            {status === "loading" && <LoadingIcon className="h-5 w-5" />}
+            {status === "unauthenticated" && (
+              <Link href="/login" passHref>
+                <a className="text-md mr-2 rounded-lg bg-primary-700 px-4 py-2 font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 lg:px-5 lg:py-2.5">
+                  Login
+                </a>
+              </Link>
+            )}
+            {status === "authenticated" && <ProfileMenu session={session} />}
             <button
               onClick={() => setIsShowingMobile((old) => !old)}
               data-collapse-toggle="mobile-menu-2"

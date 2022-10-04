@@ -80,7 +80,11 @@ const SidebarLinks = () => (
       <DrawerLink href="/admin" label="Dashboard" icon={MdDashboard} />
       <DrawerLink href="/admin" label="Inbox" badge={3} icon={MdInbox} />
       <DrawerLink href="/admin" label="Users" icon={FaUserCircle} />
-      <DrawerLink href="/admin" label="Products" icon={MdShoppingBag} />
+      <DrawerLink
+        href="/admin/products"
+        label="Products"
+        icon={MdShoppingBag}
+      />
     </ul>
   </div>
 );

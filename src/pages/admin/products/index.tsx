@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { AdminLayout, Button } from "components";
+import { AdminLayout, ButtonLink } from "components";
 import { useState } from "react";
 import { MdAddCircle } from "react-icons/md";
 
@@ -83,7 +83,11 @@ const Index = () => {
     <AdminLayout>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Products</h1>
-        <Button label="Add Product" icon={<MdAddCircle size={20} />} />
+        <ButtonLink
+          href="/admin/products/create"
+          label="Add Product"
+          icon={<MdAddCircle size={20} />}
+        />
       </div>
       <div className="relative my-10 overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">

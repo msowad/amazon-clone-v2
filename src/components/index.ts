@@ -21,3 +21,4 @@ export { default as ProfileMenu } from "./profile-menu";
 export { default as LoadingIcon } from "./loading-icon";
 export { default as AdminLayout } from "./admin-layout";
 export { default as DrawerLink } from "./drawer-link";
+export { default as Sidebar } from "./sidebar";

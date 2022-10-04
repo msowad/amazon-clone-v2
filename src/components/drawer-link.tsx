@@ -1,7 +1,9 @@
+import { IconType } from "react-icons";
+
 interface Props {
   href: string;
   label: string;
-  icon: keyof JSX.IntrinsicElements;
+  icon: IconType;
   badge?: string | number;
 }
 

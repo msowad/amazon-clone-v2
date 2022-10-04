@@ -2,7 +2,7 @@ import { MouseEventHandler } from "react";
 
 interface Props {
   type?: "button" | "submit" | "reset";
-  label: string;
+  label?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   fullWidth?: boolean;
   secondary?: boolean;
@@ -28,7 +28,7 @@ const Button: React.FC<Props> = ({
       } flex items-center px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4`}
     >
       {icon}
-      <span className={`${icon ? "ml-2" : ""}`}>{label}</span>
+      {label && <span className={`${icon ? "ml-2" : ""}`}>{label}</span>}
     </button>
   );
 };

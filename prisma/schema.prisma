@@ -61,6 +61,8 @@ model VerificationToken {
 }
 
 model Category {
-    id   String @id @default(cuid())
-    name String
+    id        String   @id @default(cuid())
+    name      String
+    slug      String
+    createdAt DateTime @default(now())
 }

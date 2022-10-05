@@ -4,5 +4,10 @@ TODO:
   -[*] home page
   -[*] details page
   -[*] products page
+  -[] category
+      -[*] create
+      -[] view
+      -[] delete
+      -[] edit
   -[] dashboard
   -[] create product

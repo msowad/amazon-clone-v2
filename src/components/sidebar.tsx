@@ -2,7 +2,13 @@ import { Transition } from "@headlessui/react";
 import { DrawerLink } from "components";
 import { Fragment } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import { MdClose, MdDashboard, MdInbox, MdShoppingBag } from "react-icons/md";
+import {
+  MdCategory,
+  MdClose,
+  MdDashboard,
+  MdInbox,
+  MdShoppingBag,
+} from "react-icons/md";
 
 interface Props {
   handleToggle: () => void;
@@ -80,6 +86,7 @@ const SidebarLinks = () => (
       <DrawerLink href="/admin" label="Dashboard" icon={MdDashboard} />
       <DrawerLink href="/admin" label="Inbox" badge={3} icon={MdInbox} />
       <DrawerLink href="/admin" label="Users" icon={FaUserCircle} />
+      <DrawerLink href="/admin/categories" label="Category" icon={MdCategory} />
       <DrawerLink
         href="/admin/products"
         label="Products"

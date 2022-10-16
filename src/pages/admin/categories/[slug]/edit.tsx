@@ -18,12 +18,12 @@ const Edit: NextPage = () => {
   const [error, setError] = useState("");
   const router = useRouter();
   const { data: category } = trpc.useQuery([
-    "admin.category",
+    "category.get",
     router.query.slug as string,
   ]);
 
   const { mutateAsync: updateCategory, isLoading } = trpc.useMutation(
-    "admin.updateCategory"
+    "admin.category.update"
   );
   const {
     register: form,

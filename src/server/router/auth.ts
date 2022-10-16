@@ -17,7 +17,7 @@ export const authRouter = createRouter().mutation("register", {
     }
 
     const hashedPassword = await hash(password);
-    const newUser = await ctx.prisma.user.create({
+    await ctx.prisma.user.create({
       data: { name, email, password: hashedPassword },
     });
 

@@ -24,7 +24,7 @@ const Create = () => {
   } = useForm<ICategory>({ resolver: zodResolver(categorySchema) });
 
   const { mutateAsync: createCategory, isLoading } = trpc.useMutation(
-    "admin.createCategory"
+    "admin.category.create"
   );
 
   const onSubmit = useCallback(
@@ -36,8 +36,12 @@ const Create = () => {
           return router.push("/admin/categories");
         }
         setError("Somethings went wrong. Please try again later");
-      } catch (error: any) {
-        setError(error.message);
+      } catch (e) {
+        if (typeof e === "string") {
+          setError(e);
+        } else if (e instanceof Error) {
+          setError(e.message);
+        }
       }
     },
     [createCategory, router]

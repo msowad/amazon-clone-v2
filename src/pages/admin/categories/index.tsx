@@ -23,7 +23,7 @@ const columns = [
 ];
 
 const Index = () => {
-  const { data } = trpc.useQuery(["admin.categories"]);
+  const { data } = trpc.useQuery(["category.getAll"]);
 
   const table = useReactTable({
     data: data || [],

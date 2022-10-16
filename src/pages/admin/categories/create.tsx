@@ -1,21 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  AdminLayout,
-  ButtonLink,
-  FormError,
-  Input,
-  LoadingButton,
-} from "components";
+import { AdminLayout, Button, ButtonLink, Input } from "components";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { MdArrowBackIos } from "react-icons/md";
+import { handleFormError } from "utils";
 import { trpc } from "utils/trpc";
 import { categorySchema, ICategory } from "utils/validation";
 
 const Create = () => {
   const router = useRouter();
-  const [error, setError] = useState("");
 
   const {
     register: form,
@@ -23,29 +18,26 @@ const Create = () => {
     formState: { errors },
   } = useForm<ICategory>({ resolver: zodResolver(categorySchema) });
 
-  const { mutateAsync: createCategory, isLoading } = trpc.useMutation(
+  const { mutateAsync: createCategory } = trpc.useMutation(
     "admin.category.create"
   );
 
   const onSubmit = useCallback(
     async (data: ICategory) => {
-      setError("");
-      try {
-        const result = await createCategory(data);
-        if (result.status === 201) {
-          return router.push("/admin/categories");
-        }
-        setError("Somethings went wrong. Please try again later");
-      } catch (e) {
-        if (typeof e === "string") {
-          setError(e);
-        } else if (e instanceof Error) {
-          setError(e.message);
-        }
-      }
+      toast.promise(createCategory(data), {
+        loading: "Saving...",
+        success: ({ status, message }) => {
+          if (status === 201) {
+            router.push("/admin/categories");
+          }
+          return message;
+        },
+        error: (e) => handleFormError(e),
+      });
     },
     [createCategory, router]
   );
+
   return (
     <AdminLayout>
       <div className="flex items-center justify-between">
@@ -68,12 +60,7 @@ const Create = () => {
           error={errors.name?.message}
         />
         <div className="p-2"></div>
-        <FormError error={error} className="mb-3" />
-        <LoadingButton
-          type="submit"
-          label="Add category"
-          isLoading={isLoading}
-        />
+        <Button type="submit" label="Add category" fullWidth />
       </form>
     </AdminLayout>
   );

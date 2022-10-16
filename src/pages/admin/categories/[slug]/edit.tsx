@@ -1,30 +1,27 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  AdminLayout,
-  ButtonLink,
-  FormError,
-  Input,
-  LoadingButton,
-} from "components";
+import { AdminLayout, Button, ButtonLink, Input } from "components";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { MdArrowBackIos } from "react-icons/md";
+import { handleFormError } from "utils";
 import { trpc } from "utils/trpc";
 import { categorySchema, ICategory } from "utils/validation";
 
 const Edit: NextPage = () => {
-  const [error, setError] = useState("");
   const router = useRouter();
+
   const { data: category } = trpc.useQuery([
     "category.get",
     router.query.slug as string,
   ]);
 
-  const { mutateAsync: updateCategory, isLoading } = trpc.useMutation(
+  const { mutateAsync: updateCategory } = trpc.useMutation(
     "admin.category.update"
   );
+
   const {
     register: form,
     handleSubmit,
@@ -44,20 +41,17 @@ const Edit: NextPage = () => {
 
   const onSubmit = useCallback(
     async (data: ICategory) => {
-      try {
-        if (!category) return;
-        const result = await updateCategory({ ...data, id: category.id });
-        if (result.status === 200) {
-          return router.push("/admin/categories");
-        }
-        setError("Somethings went wrong. Please try again later");
-      } catch (e) {
-        if (typeof e === "string") {
-          setError(e);
-        } else if (e instanceof Error) {
-          setError(e.message);
-        }
-      }
+      if (!category) return;
+      toast.promise(updateCategory({ ...data, id: category.id }), {
+        loading: "Saving...",
+        success: ({ status, message }) => {
+          if (status === 200) {
+            router.push("/admin/categories");
+          }
+          return message;
+        },
+        error: (e) => handleFormError(e),
+      });
     },
     [category, router, updateCategory]
   );
@@ -86,12 +80,7 @@ const Edit: NextPage = () => {
           error={errors.name?.message}
         />
         <div className="p-2"></div>
-        <FormError error={error} className="mb-3" />
-        <LoadingButton
-          type="submit"
-          label="Update category"
-          isLoading={isLoading}
-        />
+        <Button type="submit" label="Update category" fullWidth />
       </form>
     </AdminLayout>
   );

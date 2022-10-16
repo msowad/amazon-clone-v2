@@ -7,3 +7,12 @@ export const defaultDateFormatOptions: Intl.DateTimeFormatOptions = {
 };
 
 export const stringToSlug = (value: string) => slugify(value, { lower: true });
+
+export const handleFormError = (e: any) => {
+  if (typeof e === "string") {
+    return e;
+  } else if (e instanceof Error) {
+    return e.message;
+  }
+  return "Something went wrong. Please try again later.";
+};

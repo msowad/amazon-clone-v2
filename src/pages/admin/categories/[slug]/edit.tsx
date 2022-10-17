@@ -18,7 +18,7 @@ const Edit: NextPage = () => {
     router.query.slug as string,
   ]);
 
-  const { mutateAsync: updateCategory } = trpc.useMutation(
+  const { mutateAsync: updateCategory, isLoading } = trpc.useMutation(
     "admin.category.update"
   );
 
@@ -80,7 +80,12 @@ const Edit: NextPage = () => {
           error={errors.name?.message}
         />
         <div className="p-2"></div>
-        <Button type="submit" label="Update category" fullWidth />
+        <Button
+          disabled={isLoading}
+          type="submit"
+          label="Update category"
+          fullWidth
+        />
       </form>
     </AdminLayout>
   );

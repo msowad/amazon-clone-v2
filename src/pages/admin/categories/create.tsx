@@ -18,7 +18,7 @@ const Create = () => {
     formState: { errors },
   } = useForm<ICategory>({ resolver: zodResolver(categorySchema) });
 
-  const { mutateAsync: createCategory } = trpc.useMutation(
+  const { mutateAsync: createCategory, isLoading } = trpc.useMutation(
     "admin.category.create"
   );
 
@@ -60,7 +60,12 @@ const Create = () => {
           error={errors.name?.message}
         />
         <div className="p-2"></div>
-        <Button type="submit" label="Add category" fullWidth />
+        <Button
+          disabled={isLoading}
+          type="submit"
+          label="Add category"
+          fullWidth
+        />
       </form>
     </AdminLayout>
   );

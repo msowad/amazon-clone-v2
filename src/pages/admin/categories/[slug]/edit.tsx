@@ -43,7 +43,7 @@ const Edit: NextPage = () => {
     async (data: ICategory) => {
       if (!category) return;
       toast.promise(updateCategory({ ...data, id: category.id }), {
-        loading: "Saving...",
+        loading: "Updating...",
         success: ({ status, message }) => {
           if (status === 200) {
             router.push("/admin/categories");

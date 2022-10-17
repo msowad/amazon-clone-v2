@@ -7,8 +7,10 @@ import {
 } from "@tanstack/react-table";
 import { AdminLayout, ButtonLink } from "components";
 import Link from "next/link";
+import { useCallback } from "react";
+import toast from "react-hot-toast";
 import { MdAddCircle } from "react-icons/md";
-import { defaultDateFormatOptions } from "utils";
+import { defaultDateFormatOptions, handleFormError } from "utils";
 import { trpc } from "utils/trpc";
 
 const columnHelper = createColumnHelper<Category>();
@@ -23,6 +25,7 @@ const columns = [
 ];
 
 const Index = () => {
+  const utils = trpc.useContext();
   const { data } = trpc.useQuery(["category.getAll"]);
 
   const table = useReactTable({
@@ -30,6 +33,26 @@ const Index = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const { mutateAsync: deleteCategory } = trpc.useMutation(
+    "admin.category.delete",
+    {
+      onSuccess() {
+        utils.invalidateQueries(["category.getAll"]);
+      },
+    }
+  );
+
+  const onDelete = useCallback(
+    async (id: string) => {
+      toast.promise(deleteCategory(id), {
+        loading: "Deleting...",
+        success: "Category deleted successfully",
+        error: (e) => handleFormError(e),
+      });
+    },
+    [deleteCategory]
+  );
 
   return (
     <AdminLayout>
@@ -78,12 +101,12 @@ const Index = () => {
                       Edit
                     </a>
                   </Link>
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => onDelete(row.original.id)}
                     className="font-medium text-red-600 hover:underline dark:text-red-500"
                   >
                     Delete
-                  </a>
+                  </button>
                 </td>
               </tr>
             ))}

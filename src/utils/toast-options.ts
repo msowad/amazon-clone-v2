@@ -13,5 +13,4 @@ export const toastOptions: DefaultToastOptions = {
       color: "#fff",
     },
   },
-  duration: 4000,
 };

@@ -6,8 +6,9 @@ TODO:
   -[*] products page
   -[] category
       -[*] create
-      -[] view
-      -[] delete
-      -[] edit
+      -[*] view
+      -[*] delete
+      -[*] edit and update
+      -[] advance table
   -[] dashboard
   -[] create product

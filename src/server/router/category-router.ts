@@ -47,6 +47,12 @@ export const adminCategoryRouter = createProtectedRouter()
       });
       return { status: 200, message: "Category updated successfully" };
     },
+  })
+  .mutation("delete", {
+    input: z.string(),
+    async resolve({ input, ctx }) {
+      return await ctx.prisma.category.delete({ where: { id: input } });
+    },
   });
 
 export const categoryRouter = createRouter()

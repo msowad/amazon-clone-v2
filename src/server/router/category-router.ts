@@ -57,8 +57,21 @@ export const adminCategoryRouter = createProtectedRouter()
 
 export const categoryRouter = createRouter()
   .query("getAll", {
-    async resolve({ ctx }) {
-      const data = await ctx.prisma.category.findMany();
+    input: z.object({
+      page: z.number(),
+      limit: z.number(),
+    }),
+    async resolve({ input, ctx }) {
+      const data = await ctx.prisma.$transaction([
+        ctx.prisma.category.count(),
+        ctx.prisma.category.findMany({
+          skip: (input.page - 1) * input.limit,
+          take: input.limit,
+          orderBy: {
+            createdAt: "desc",
+          },
+        }),
+      ]);
       return data;
     },
   })

@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
+import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import { MdAddCircle } from "react-icons/md";
 import { defaultDateFormatOptions, handleFormError } from "utils";
 import { trpc } from "utils/trpc";
@@ -26,6 +27,14 @@ const columns = [
   }),
 ];
 
+const defaultPage = 1;
+const defaultLimit = 10;
+const defaultOrderBy = "createdAt";
+const defaultSortOrder = "desc";
+
+const removeUndefined = (obj: Record<string, string | number | undefined>) =>
+  Object.fromEntries(Object.entries(obj).filter(([, val]) => val != undefined));
+
 const Index = () => {
   const router = useRouter();
   const [page, setPage] = useState(
@@ -34,14 +43,45 @@ const Index = () => {
   const [limit, setLimit] = useState(
     router.query.page ? parseInt(router.query.limit as string) : 10
   );
+  const [orderBy, setOrderBy] = useState(
+    router.query.orderBy ? (router.query.orderBy as string) : "createdAt"
+  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(() => {
+    if (router.query.sortOrder) {
+      if (
+        router.query.sortOrder === "asc" ||
+        router.query.sortOrder === "desc"
+      ) {
+        return router.query.sortOrder;
+      }
+    }
+    return "desc";
+  });
 
-  const handleQueryChange = (values: { page?: number; limit?: number }) => {
-    router.replace(router.pathname, {
-      query: {
-        page: values.page || page,
-        limit: values.limit || limit,
+  const handleQueryChange = (values: {
+    page?: number;
+    limit?: number;
+    sortOrder?: "asc" | "desc";
+    orderBy?: string;
+  }) => {
+    const newPage = values.page || page;
+    const newLimit = values.limit || limit;
+    const newOrderBy = values.orderBy || orderBy;
+    const newSortOrder = values.sortOrder || sortOrder;
+    router.push(
+      {
+        pathname: router.pathname,
+        query: removeUndefined({
+          page: newPage === defaultPage ? undefined : newPage,
+          limit: newLimit === defaultLimit ? undefined : newLimit,
+          orderBy: newOrderBy === defaultOrderBy ? undefined : newOrderBy,
+          sortOrder:
+            newSortOrder === defaultSortOrder ? undefined : newSortOrder,
+        }),
       },
-    });
+      undefined,
+      { shallow: true }
+    );
   };
 
   const handlePageChange = (newPage: number) => {
@@ -54,22 +94,34 @@ const Index = () => {
     handleQueryChange({ limit: newLimit });
   };
 
+  const handleSort = (newOrderBy: string) => {
+    if (orderBy === newOrderBy) {
+      const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
+      setSortOrder(newSortOrder);
+      handleQueryChange({ sortOrder: newSortOrder });
+    } else {
+      setSortOrder("asc");
+      setOrderBy(newOrderBy);
+      handleQueryChange({ sortOrder: "asc", orderBy: newOrderBy });
+    }
+  };
+
   const utils = trpc.useContext();
   const { data, isLoading } = trpc.useQuery([
     "category.getAll",
-    { page, limit },
+    { page, limit, orderBy, sortOrder },
   ]);
+
+  const totalPage = useMemo(
+    () => Math.ceil((data ? data[0] : 0) / limit),
+    [data, limit]
+  );
 
   const table = useReactTable({
     data: data ? data[1] : [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
-  const totalPage = useMemo(
-    () => Math.ceil((data ? data[0] : 0) / limit),
-    [data, limit]
-  );
 
   const { mutateAsync: deleteCategory } = trpc.useMutation(
     "admin.category.delete",
@@ -112,11 +164,28 @@ const Index = () => {
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <th key={header.id} className="py-3 px-6">
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                    <th key={header.id} className="py-2 px-6">
+                      <div className="flex items-center">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        <button
+                          onClick={() => handleSort(header.column.id)}
+                          className={`p-2 ${
+                            orderBy === header.column.id
+                              ? "text-gray-200"
+                              : "text-gray-500"
+                          }`}
+                        >
+                          {sortOrder === "desc" &&
+                          orderBy === header.column.id ? (
+                            <FaArrowDown />
+                          ) : (
+                            <FaArrowUp />
+                          )}
+                        </button>
+                      </div>
                     </th>
                   ))}
                   <th className="py-3 px-6 text-right">Action</th>
@@ -196,7 +265,7 @@ const Index = () => {
               </span>
             </div>
           </div>
-          <ul className="inline-flex items-center -space-x-px">
+          <ul className="pagination-items inline-flex items-center -space-x-px">
             <li>
               <button
                 disabled={page <= 1}
@@ -206,20 +275,6 @@ const Index = () => {
                 Previous
               </button>
             </li>
-            {Array.from(Array(totalPage)).map((item, index) => (
-              <li key={index}>
-                <button
-                  onClick={() => handlePageChange(index + 1)}
-                  className={`border border-gray-300 py-2 px-3 leading-tight text-gray-500 hover:bg-gray-300 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
-                    page === index + 1
-                      ? "bg-gray-300 dark:bg-gray-700"
-                      : "bg-white dark:bg-gray-800"
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              </li>
-            ))}
             <li>
               <button
                 disabled={page >= totalPage}

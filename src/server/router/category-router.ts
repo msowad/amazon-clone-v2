@@ -60,6 +60,8 @@ export const categoryRouter = createRouter()
     input: z.object({
       page: z.number(),
       limit: z.number(),
+      orderBy: z.string(),
+      sortOrder: z.enum(["desc", "asc"]),
     }),
     async resolve({ input, ctx }) {
       const data = await ctx.prisma.$transaction([
@@ -68,7 +70,7 @@ export const categoryRouter = createRouter()
           skip: (input.page - 1) * input.limit,
           take: input.limit,
           orderBy: {
-            createdAt: "desc",
+            [input.orderBy]: input.sortOrder,
           },
         }),
       ]);

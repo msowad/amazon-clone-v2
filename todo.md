@@ -4,11 +4,13 @@ TODO:
   -[*] home page
   -[*] details page
   -[*] products page
-  -[] category
+  -[*] category
       -[*] create
       -[*] view
       -[*] delete
       -[*] edit and update
-      -[] advance table
+      -[*] advance table
+  -[] products
+      -[] CRUD
   -[] dashboard
   -[] create product

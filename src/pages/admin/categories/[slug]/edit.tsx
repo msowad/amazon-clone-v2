@@ -46,7 +46,7 @@ const Edit: NextPage = () => {
         loading: "Updating...",
         success: ({ status, message }) => {
           if (status === 200) {
-            router.push("/admin/categories");
+            router.back();
           }
           return message;
         },

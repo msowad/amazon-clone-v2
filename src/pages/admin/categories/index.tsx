@@ -6,13 +6,14 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { AdminLayout, ButtonLink } from "components";
+import useDebounce from "components/use-debounce";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
-import { MdAddCircle } from "react-icons/md";
+import { MdAddCircle, MdClose, MdSearch } from "react-icons/md";
 import { defaultDateFormatOptions, handleFormError } from "utils";
 import { trpc } from "utils/trpc";
 
@@ -31,6 +32,7 @@ const defaultPage = 1;
 const defaultLimit = 10;
 const defaultOrderBy = "createdAt";
 const defaultSortOrder = "desc";
+const defaultQuery = "";
 
 const removeUndefined = (obj: Record<string, string | number | undefined>) =>
   Object.fromEntries(Object.entries(obj).filter(([, val]) => val != undefined));
@@ -38,13 +40,17 @@ const removeUndefined = (obj: Record<string, string | number | undefined>) =>
 const Index = () => {
   const router = useRouter();
   const [page, setPage] = useState(
-    router.query.page ? parseInt(router.query.page as string) : 1
+    router.query.page ? parseInt(router.query.page as string) : defaultPage
   );
   const [limit, setLimit] = useState(
-    router.query.page ? parseInt(router.query.limit as string) : 10
+    router.query.limit ? parseInt(router.query.limit as string) : defaultLimit
   );
+  const [query, setQuery] = useState(
+    router.query.query ? (router.query.query as string) : defaultQuery
+  );
+  const [search, setSearch] = useState(query);
   const [orderBy, setOrderBy] = useState(
-    router.query.orderBy ? (router.query.orderBy as string) : "createdAt"
+    router.query.orderBy ? (router.query.orderBy as string) : defaultOrderBy
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(() => {
     if (router.query.sortOrder) {
@@ -55,7 +61,7 @@ const Index = () => {
         return router.query.sortOrder;
       }
     }
-    return "desc";
+    return defaultSortOrder;
   });
 
   const handleQueryChange = (values: {
@@ -63,11 +69,13 @@ const Index = () => {
     limit?: number;
     sortOrder?: "asc" | "desc";
     orderBy?: string;
+    query?: string;
   }) => {
     const newPage = values.page || page;
     const newLimit = values.limit || limit;
     const newOrderBy = values.orderBy || orderBy;
     const newSortOrder = values.sortOrder || sortOrder;
+    const newQuery = values.query === undefined ? query : values.query;
     router.push(
       {
         pathname: router.pathname,
@@ -77,6 +85,7 @@ const Index = () => {
           orderBy: newOrderBy === defaultOrderBy ? undefined : newOrderBy,
           sortOrder:
             newSortOrder === defaultSortOrder ? undefined : newSortOrder,
+          query: newQuery === defaultQuery ? undefined : newQuery,
         }),
       },
       undefined,
@@ -106,10 +115,19 @@ const Index = () => {
     }
   };
 
+  useDebounce(
+    () => {
+      setQuery(search);
+      handleQueryChange({ query: search || "" });
+    },
+    [search],
+    300
+  );
+
   const utils = trpc.useContext();
   const { data, isLoading } = trpc.useQuery([
     "category.getAll",
-    { page, limit, orderBy, sortOrder },
+    { page, limit, orderBy, sortOrder, query },
   ]);
 
   const totalPage = useMemo(
@@ -153,7 +171,42 @@ const Index = () => {
           icon={<MdAddCircle size={20} />}
         />
       </div>
-      <div className="mt-10  overflow-auto shadow-md sm:rounded-lg">
+      <div className="p-2" />
+      <form
+        noValidate
+        onSubmit={(e) => {
+          e.preventDefault();
+          setQuery(search);
+        }}
+        className="my-2 flex items-center"
+      >
+        <label htmlFor="search" className="sr-only">
+          Search
+        </label>
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <MdSearch size={25} />
+          </div>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            className="input-primary !pr-10 !pl-10"
+            placeholder="Search"
+          />
+          <button
+            type="button"
+            onClick={() => setSearch("")}
+            className={`${
+              search.length < 1 && "hidden"
+            } absolute inset-y-0 right-0 flex items-center pr-2`}
+          >
+            <MdClose size={20} />
+          </button>
+        </div>
+      </form>
+      <div className="p-1" />
+      <div className="overflow-auto shadow-md sm:rounded-lg">
         {isLoading ? (
           <div className="flex h-96 items-center justify-center">
             <CgSpinner size={35} className="animate-spin" />
@@ -256,7 +309,7 @@ const Index = () => {
             <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
               Showing{" "}
               <span className="font-semibold text-gray-900 dark:text-white">
-                {(page - 1) * limit + 1}-
+                {data[0] === 0 ? 0 : (page - 1) * limit + 1}-
                 {page * limit > data[0] ? data[0] : page * limit}
               </span>{" "}
               of{" "}

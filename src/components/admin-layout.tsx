@@ -20,7 +20,7 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
     <main className="flex">
       <Sidebar handleToggle={handleToggle} isShowing={isShowing} />
       <div className="w-full lg:ml-60">
-        <header className="fixed right-0 left-0 top-0 flex items-center justify-between bg-white px-10 py-3 dark:bg-gray-800 lg:ml-60">
+        <header className="fixed right-0 left-0 top-0 z-10 flex items-center justify-between bg-white px-10 py-3 dark:bg-gray-800 lg:ml-60">
           <div className="flex items-center">
             <button
               type="button"
@@ -36,8 +36,8 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
               <label htmlFor="search" className="sr-only">
                 Search
               </label>
-              <div className="relative w-full">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <div className="relative z-10 w-full">
+                <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-3">
                   <MdSearch size={25} />
                 </div>
                 <input

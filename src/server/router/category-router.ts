@@ -62,15 +62,27 @@ export const categoryRouter = createRouter()
       limit: z.number(),
       orderBy: z.string(),
       sortOrder: z.enum(["desc", "asc"]),
+      query: z.string(),
     }),
     async resolve({ input, ctx }) {
       const data = await ctx.prisma.$transaction([
-        ctx.prisma.category.count(),
+        ctx.prisma.category.count({
+          where: {
+            name: {
+              contains: input.query,
+            },
+          },
+        }),
         ctx.prisma.category.findMany({
           skip: (input.page - 1) * input.limit,
           take: input.limit,
           orderBy: {
             [input.orderBy]: input.sortOrder,
+          },
+          where: {
+            name: {
+              contains: input.query,
+            },
           },
         }),
       ]);

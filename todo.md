@@ -13,4 +13,11 @@ TODO:
   -[*] products
       -[*] CRUD
   -[*] authorization
+  -[] home page
+  -[] product page
+  -[] add to cart
+  -[] add to wishlist
+  -[] place order
+  -[] handle payment
+  -[] banner
   -[] dashboard

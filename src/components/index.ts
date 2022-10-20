@@ -24,3 +24,4 @@ export { default as DrawerLink } from "./drawer-link";
 export { default as Sidebar } from "./sidebar";
 export { default as ButtonLink } from "./button-link";
 export { default as FormError } from "./form-error";
+export { default as ProductsFilter } from "./products-filter";

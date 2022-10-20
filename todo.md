@@ -10,7 +10,7 @@ TODO:
       -[*] delete
       -[*] edit and update
       -[*] advance table
-  -[] products
-      -[] CRUD
+  -[*] products
+      -[*] CRUD
+  -[] authorization
   -[] dashboard
-  -[] create product

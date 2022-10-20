@@ -2,7 +2,7 @@ import { flexRender, Table } from "@tanstack/react-table";
 import Link from "next/link";
 import { useMemo } from "react";
 import { CgSpinner } from "react-icons/cg";
-import { FaArrowDown, FaArrowUp } from "react-icons/fa";
+import { FaArrowDown, FaArrowUp, FaExclamationTriangle } from "react-icons/fa";
 import { MdAddCircle, MdClose, MdSearch } from "react-icons/md";
 import ButtonLink from "../components/button-link";
 
@@ -98,11 +98,18 @@ const DataTable = <T,>({
       </form>
       <div className="p-1" />
       <div className="overflow-auto shadow-md sm:rounded-lg">
-        {isLoading ? (
+        {!isLoading && !data.length && (
+          <div className="flex h-96 flex-col items-center justify-center">
+            <FaExclamationTriangle size={25} />
+            <h1 className="mt-2 text-xl font-semibold">Empty Table</h1>
+          </div>
+        )}
+        {isLoading && (
           <div className="flex h-96 items-center justify-center">
             <CgSpinner size={35} className="animate-spin" />
           </div>
-        ) : (
+        )}
+        {!isLoading && data.length ? (
           <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
             <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -171,10 +178,10 @@ const DataTable = <T,>({
               ))}
             </tbody>
           </table>
-        )}
+        ) : null}
       </div>
       {/* Pagination */}
-      {data && (
+      {data.length ? (
         <nav
           className="flex flex-col items-center justify-between space-y-4 pt-4 md:flex-row"
           aria-label="Table navigation"
@@ -233,7 +240,7 @@ const DataTable = <T,>({
             </li>
           </ul>
         </nav>
-      )}
+      ) : null}
     </>
   );
 };

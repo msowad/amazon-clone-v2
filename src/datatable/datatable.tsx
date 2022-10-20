@@ -209,7 +209,7 @@ const DataTable = <T,>({
               Showing{" "}
               <span className="font-semibold text-gray-900 dark:text-white">
                 <>
-                  {data[0] === 0 ? 0 : (page - 1) * limit + 1}-
+                  {totalCount === 0 ? 0 : (page - 1) * limit + 1}-
                   {page * limit > totalCount ? totalCount : page * limit}
                 </>
               </span>{" "}

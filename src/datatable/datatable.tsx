@@ -17,6 +17,7 @@ interface Props<T> {
   page: number;
   limit: number;
   totalCount: number;
+  createButtonLink: string;
   onPageChange: (newPage: number) => void;
   onLimitChange: (newLimit: number) => void;
   onSearch: (q: string) => void;
@@ -37,6 +38,7 @@ const DataTable = <T,>({
   page,
   limit,
   totalCount,
+  createButtonLink,
   onPageChange,
   onLimitChange,
   onSearch,
@@ -55,8 +57,8 @@ const DataTable = <T,>({
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{title}</h1>
         <ButtonLink
-          href="/admin/categories/create"
-          label="Add Category"
+          href={createButtonLink}
+          label={`Add ${title}`}
           icon={<MdAddCircle size={20} />}
         />
       </div>
@@ -108,25 +110,29 @@ const DataTable = <T,>({
                   {headerGroup.headers.map((header) => (
                     <th key={header.id} className="py-2 px-6">
                       <div className="flex items-center">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        <button
-                          onClick={() => onSort(header.column.id)}
-                          className={`p-2 ${
-                            orderBy === header.column.id
-                              ? "text-gray-200"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          {sortOrder === "desc" &&
-                          orderBy === header.column.id ? (
-                            <FaArrowDown />
-                          ) : (
-                            <FaArrowUp />
+                        <>
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
                           )}
-                        </button>
+                          {header.column.getCanSort() && (
+                            <button
+                              onClick={() => onSort(header.column.id)}
+                              className={`p-2 ${
+                                orderBy === header.column.id
+                                  ? "text-gray-200"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              {sortOrder === "desc" &&
+                              orderBy === header.column.id ? (
+                                <FaArrowDown />
+                              ) : (
+                                <FaArrowUp />
+                              )}
+                            </button>
+                          )}
+                        </>
                       </div>
                     </th>
                   ))}

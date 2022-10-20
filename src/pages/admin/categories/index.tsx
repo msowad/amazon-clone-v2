@@ -72,6 +72,8 @@ const Index = () => {
   return (
     <AdminLayout>
       <DataTable
+        title="Category"
+        createButtonLink="/admin/categories/create"
         data={data ? data[1] : []}
         isLoading={isLoading}
         limit={limit}
@@ -86,7 +88,6 @@ const Index = () => {
         search={search}
         sortOrder={sortOrder}
         table={table}
-        title="Category"
         totalCount={data ? data[0] : 0}
         renderEditUrl={(original) => `/admin/categories/${original.slug}/edit`}
       />

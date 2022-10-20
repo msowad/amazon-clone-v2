@@ -97,4 +97,11 @@ export const categoryRouter = createRouter()
       });
       return category;
     },
+  })
+  .query("getOnlyName", {
+    async resolve({ ctx }) {
+      return await ctx.prisma.category.findMany({
+        select: { name: true },
+      });
+    },
   });

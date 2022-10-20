@@ -1,128 +1,121 @@
 import {
   createColumnHelper,
-  flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { AdminLayout, ButtonLink } from "components";
-import { useState } from "react";
-import { MdAddCircle } from "react-icons/md";
+import { AdminLayout } from "components";
+import { DataTable, useDataTable } from "datatable";
+import Link from "next/link";
+import { useCallback } from "react";
+import toast from "react-hot-toast";
+import { ProductResponse } from "server/router/product-router";
+import { defaultDateFormatOptions, handleFormError } from "utils";
+import { trpc } from "utils/trpc";
 
-type Person = {
-  firstName: string;
-  lastName: string;
-  age: number;
-  visits: number;
-  status: string;
-  progress: number;
-};
-
-const defaultData: Person[] = [
-  {
-    firstName: "tanner",
-    lastName: "linsley",
-    age: 24,
-    visits: 100,
-    status: "In Relationship",
-    progress: 50,
-  },
-  {
-    firstName: "tandy",
-    lastName: "miller",
-    age: 40,
-    visits: 40,
-    status: "Single",
-    progress: 80,
-  },
-  {
-    firstName: "joe",
-    lastName: "dirte",
-    age: 45,
-    visits: 20,
-    status: "Complicated",
-    progress: 10,
-  },
-];
-
-const columnHelper = createColumnHelper<Person>();
+const columnHelper = createColumnHelper<ProductResponse>();
 
 const columns = [
-  columnHelper.accessor("firstName", {
-    header: () => "First Name",
-    cell: (info) => info.getValue(),
+  columnHelper.accessor("name", { header: "Name" }),
+  columnHelper.accessor("price", { header: "Price" }),
+  columnHelper.accessor("stock", { header: "Stock" }),
+  columnHelper.accessor("shortDescription", {
+    header: "Short Description",
+    cell: (props) => props.getValue().substring(0, 10),
   }),
-  columnHelper.accessor("lastName", {
-    header: () => "Last Name",
-    cell: (info) => info.getValue(),
+  columnHelper.accessor("categories", {
+    header: "Categories",
+    cell: (props) => {
+      const categories = props.getValue();
+      const names = categories.map((c, i) => (
+        <Link key={c.id} href={`/admin/categories/${c.slug}/edit`} passHref>
+          <a className="font-medium text-primary-600 hover:underline dark:text-primary-500">
+            {c.name}
+            {i !== categories.length - 1 && ", "}
+          </a>
+        </Link>
+      ));
+      return names;
+      console.log({ names });
+      return <Link href="/">c</Link>;
+    },
+    enableSorting: false,
   }),
-  columnHelper.accessor("age", {
-    header: () => "Age",
-    cell: (info) => info.renderValue(),
-  }),
-  columnHelper.accessor("visits", {
-    header: () => <span>Visits</span>,
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
-  }),
-  columnHelper.accessor("progress", {
-    header: "Profile Progress",
+  columnHelper.accessor("createdAt", {
+    header: "Created At",
+    cell: (props) =>
+      props.getValue().toLocaleDateString("en-US", defaultDateFormatOptions),
   }),
 ];
 
 const Index = () => {
-  const [data, setData] = useState(() => [...defaultData]);
+  const {
+    page,
+    limit,
+    orderBy,
+    sortOrder,
+    query,
+    search,
+    setSearch,
+    handleLimitChange,
+    handlePageChange,
+    handleSort,
+    setQuery,
+  } = useDataTable();
+
+  const utils = trpc.useContext();
+  const { data, isLoading } = trpc.useQuery([
+    "product.getAll",
+    { page, limit, orderBy, sortOrder, query },
+  ]);
 
   const table = useReactTable({
-    data,
+    data: data ? data[1] : [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const { mutateAsync: deleteProduct } = trpc.useMutation(
+    "admin.product.delete",
+    {
+      onSuccess() {
+        utils.invalidateQueries(["product.getAll"]);
+      },
+    }
+  );
+
+  const onDelete = useCallback(
+    async (id: string) => {
+      toast.promise(deleteProduct(id), {
+        loading: "Deleting...",
+        success: "Product deleted successfully",
+        error: (e) => handleFormError(e),
+      });
+    },
+    [deleteProduct]
+  );
+
   return (
     <AdminLayout>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Products</h1>
-        <ButtonLink
-          href="/admin/products/create"
-          label="Add Product"
-          icon={<MdAddCircle size={20} />}
-        />
-      </div>
-      <div className="relative my-10 overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-          <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="py-3 px-6">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900  even:dark:bg-gray-800"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="py-4 px-6">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        title="Product"
+        createButtonLink="/admin/products/create"
+        data={data ? data[1] : []}
+        isLoading={isLoading}
+        limit={limit}
+        onDelete={(original) => onDelete(original.id)}
+        onLimitChange={handleLimitChange}
+        onPageChange={handlePageChange}
+        onSearch={(q) => setSearch(q)}
+        onSearchSubmit={() => setQuery(search)}
+        onSort={handleSort}
+        orderBy={orderBy}
+        page={page}
+        search={search}
+        sortOrder={sortOrder}
+        table={table}
+        totalCount={data ? data[0] : 0}
+        renderEditUrl={(original) => `/admin/products/${original.slug}/edit`}
+      />
     </AdminLayout>
   );
 };

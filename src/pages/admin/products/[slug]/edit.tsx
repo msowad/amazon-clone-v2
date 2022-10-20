@@ -21,7 +21,7 @@ const Edit: NextPage = () => {
     { ssr: false }
   );
 
-  const { data: product } = trpc.useQuery([
+  const { data: product, isSuccess } = trpc.useQuery([
     "product.get",
     router.query.slug as string,
   ]);
@@ -102,7 +102,7 @@ const Edit: NextPage = () => {
     [product, router, selectedCategories, updateProduct, disSelectedCategories]
   );
 
-  if (!product) {
+  if (!product && isSuccess) {
     return (
       <AdminLayout>
         <div className="flex h-96 flex-col items-center justify-center">

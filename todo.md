@@ -12,5 +12,5 @@ TODO:
       -[*] advance table
   -[*] products
       -[*] CRUD
-  -[] authorization
+  -[*] authorization
   -[] dashboard

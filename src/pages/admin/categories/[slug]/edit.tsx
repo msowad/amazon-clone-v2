@@ -14,7 +14,7 @@ import { categorySchema, ICategory } from "utils/validation";
 const Edit: NextPage = () => {
   const router = useRouter();
 
-  const { data: category } = trpc.useQuery([
+  const { data: category, isSuccess } = trpc.useQuery([
     "category.get",
     router.query.slug as string,
   ]);
@@ -57,7 +57,7 @@ const Edit: NextPage = () => {
     [category, router, updateCategory]
   );
 
-  if (!category) {
+  if (!category && isSuccess) {
     return (
       <AdminLayout>
         <div className="flex h-96 flex-col items-center justify-center">

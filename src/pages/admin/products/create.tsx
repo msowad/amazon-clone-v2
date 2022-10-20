@@ -99,7 +99,7 @@ const Create = () => {
                 <Combobox.Input
                   className="input-primary w-full cursor-pointer !pr-10"
                   displayValue={(values: { name: string }[]) =>
-                    values.map((person) => person.name).join(", ")
+                    values.map((v) => v.name).join(", ")
                   }
                   placeholder="Select categories"
                   readOnly

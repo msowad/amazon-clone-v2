@@ -29,7 +29,7 @@ export const adminProductRouter = createProtectedRouter()
           name: input.name,
           slug: stringToSlug(input.name),
           description: input.description,
-          shortDescription: input.description,
+          shortDescription: input.shortDescription,
           price: parseInt(input.price),
           stock: parseInt(input.stock),
           categories: {
@@ -41,7 +41,11 @@ export const adminProductRouter = createProtectedRouter()
     },
   })
   .mutation("update", {
-    input: productSchema.extend({ id: z.string(), categories }),
+    input: productSchema.extend({
+      id: z.string(),
+      categories,
+      disSelectedCategories: categories,
+    }),
     async resolve({ input, ctx }) {
       const entry = await ctx.prisma.product.findFirst({
         where: { name: input.name, NOT: { id: input.id } },
@@ -58,11 +62,12 @@ export const adminProductRouter = createProtectedRouter()
           name: input.name,
           slug: stringToSlug(input.name),
           description: input.description,
-          shortDescription: input.description,
+          shortDescription: input.shortDescription,
           price: parseInt(input.price),
           stock: parseInt(input.stock),
           categories: {
             connect: input.categories,
+            disconnect: input.disSelectedCategories,
           },
         },
       });
@@ -150,6 +155,19 @@ export const productRouter = createRouter()
     async resolve({ input, ctx }) {
       return await ctx.prisma.product.findFirst({
         where: { slug: input },
+        select: {
+          categories: {
+            select: {
+              name: true,
+            },
+          },
+          id: true,
+          name: true,
+          price: true,
+          stock: true,
+          shortDescription: true,
+          description: true,
+        },
       });
     },
   });

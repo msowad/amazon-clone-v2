@@ -36,6 +36,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          isAdmin: user.isAdmin,
         };
       },
     }),
@@ -45,13 +46,10 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token = user;
       }
-
       return token;
     },
     session: async ({ session, token }) => {
-      if (token) {
-        session.user = token;
-      }
+      session.user == token.user;
       return session;
     },
   },

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { FaExclamationTriangle } from "react-icons/fa";
 import { MdArrowBackIos } from "react-icons/md";
 import { handleFormError } from "utils";
 import { trpc } from "utils/trpc";
@@ -55,6 +56,18 @@ const Edit: NextPage = () => {
     },
     [category, router, updateCategory]
   );
+
+  if (!category) {
+    return (
+      <AdminLayout>
+        <div className="flex h-96 flex-col items-center justify-center">
+          <FaExclamationTriangle size={25} />
+          <h1 className="my-3 text-xl font-semibold">Category Not Found</h1>
+          <ButtonLink href="/admin/categories" label="View all categories" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>

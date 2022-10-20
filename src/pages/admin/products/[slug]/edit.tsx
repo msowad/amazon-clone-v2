@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { FaExclamationTriangle } from "react-icons/fa";
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
 import { MdArrowBackIos, MdCheck } from "react-icons/md";
 import { handleFormError } from "utils";
@@ -15,9 +16,11 @@ import { IProduct, productSchema } from "utils/validation";
 const Edit: NextPage = () => {
   const router = useRouter();
 
-  const { data: categories, isSuccess: isCategoriesSuccess } = trpc.useQuery([
-    "category.getOnlyName",
-  ]);
+  const { data: categories, isSuccess: isCategoriesSuccess } = trpc.useQuery(
+    ["category.getOnlyName"],
+    { ssr: false }
+  );
+
   const { data: product } = trpc.useQuery([
     "product.get",
     router.query.slug as string,
@@ -98,6 +101,18 @@ const Edit: NextPage = () => {
     },
     [product, router, selectedCategories, updateProduct, disSelectedCategories]
   );
+
+  if (!product) {
+    return (
+      <AdminLayout>
+        <div className="flex h-96 flex-col items-center justify-center">
+          <FaExclamationTriangle size={25} />
+          <h1 className="my-3 text-xl font-semibold">Product Not Found</h1>
+          <ButtonLink href="/admin/products" label="View all products" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>

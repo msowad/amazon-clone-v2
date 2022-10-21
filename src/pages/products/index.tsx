@@ -13,6 +13,7 @@ const Index = () => {
   const [orderBy, setOrderBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isFilterShowing, setIsFilterShowing] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const { data: product, isLoading } = trpc.useQuery([
     "product.getAll",
@@ -22,8 +23,12 @@ const Index = () => {
       orderBy,
       sortOrder,
       query: "",
+      includesCategory: false,
+      whereCategories: selectedCategory,
     },
   ]);
+
+  const { data: categories } = trpc.useQuery(["category.getOnlyName"]);
 
   const totalPage = useMemo(
     () => Math.ceil((product ? product[0] : 0) / limit),
@@ -37,7 +42,13 @@ const Index = () => {
       />
       <section className="container grid grid-cols-1 gap-6 py-10 md:grid-cols-8">
         <div className="col-span-2 hidden md:block">
-          <ProductsFilter />
+          <ProductsFilter
+            categories={categories || []}
+            onCategorySelect={(c) =>
+              setSelectedCategory(c == selectedCategory ? "" : c)
+            }
+            selectedCategory={selectedCategory}
+          />
         </div>
         <div className="col-span-6">
           <div className="flex justify-between">
@@ -107,7 +118,13 @@ const Index = () => {
                     <MdClose size={30} />
                   </button>
                 </div>
-                <ProductsFilter />
+                <ProductsFilter
+                  categories={categories || []}
+                  onCategorySelect={(c) =>
+                    setSelectedCategory(c == selectedCategory ? "" : c)
+                  }
+                  selectedCategory={selectedCategory}
+                />
               </div>
             </Transition>
           </div>

@@ -97,9 +97,11 @@ export const productRouter = createRouter()
       orderBy: z.string(),
       sortOrder: z.enum(["desc", "asc"]),
       query: z.string(),
+      includesCategory: z.optional(z.boolean()),
+      whereCategories: z.optional(z.string()),
     }),
     async resolve({ input, ctx }) {
-      const where: Prisma.ProductWhereInput = {
+      const whereForSearch: Prisma.ProductWhereInput = {
         OR: [
           {
             name: {
@@ -128,6 +130,36 @@ export const productRouter = createRouter()
         ],
       };
 
+      const whereForCategoryAndSearch: Prisma.ProductWhereInput = {
+        categories: {
+          some: {
+            name: { equals: input.whereCategories },
+          },
+        },
+        OR: [
+          {
+            name: {
+              contains: input.query,
+            },
+          },
+          {
+            shortDescription: {
+              contains: input.query,
+            },
+          },
+          {
+            description: {
+              contains: input.query,
+            },
+          },
+        ],
+      };
+
+      const where =
+        input.whereCategories && input.whereCategories.length > 1
+          ? whereForCategoryAndSearch
+          : whereForSearch;
+
       return await ctx.prisma.$transaction([
         ctx.prisma.product.count({ where }),
         ctx.prisma.product.findMany({
@@ -137,7 +169,7 @@ export const productRouter = createRouter()
             [input.orderBy]: input.sortOrder,
           },
           include: {
-            categories: {
+            categories: input.includesCategory && {
               select: {
                 id: true,
                 slug: true,

@@ -1,25 +1,33 @@
-const ProductsFilter: React.FC = ({}) => {
+interface Props {
+  categories: { name: string }[];
+  selectedCategory: string;
+  onCategorySelect: (name: string) => void;
+}
+
+const ProductsFilter: React.FC<Props> = ({
+  categories,
+  onCategorySelect,
+  selectedCategory,
+}) => {
   return (
     <div>
       <h1 className="mb-1 text-lg font-bold">Categories</h1>
-      <hr className="mb-2 border-black dark:border-white" />
+      <hr className="mb-2 border-gray-500 dark:border-gray-400" />
       <ul className="text-sm font-medium text-gray-900 dark:text-white">
-        <li>
-          <div className="flex items-center pl-3">
-            <input
-              id="vue-checkbox"
-              type="checkbox"
-              value=""
-              className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-primary-600 accent-primary-600 focus:ring-2 focus:ring-primary-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-primary-600"
-            />
-            <label
-              htmlFor="vue-checkbox"
-              className="ml-2 w-full py-1 text-sm font-medium text-gray-900 dark:text-gray-300"
+        {categories.map((c, i) => (
+          <li key={i}>
+            <button
+              onClick={() => onCategorySelect(c.name)}
+              className={`block py-1 text-sm font-medium transition-transform hover:translate-x-1 hover:text-primary-500 ${
+                selectedCategory === c.name
+                  ? "text-primary-500"
+                  : "text-gray-500 dark:text-gray-400"
+              }`}
             >
-              Vue JS
-            </label>
-          </div>
-        </li>
+              {c.name}
+            </button>
+          </li>
+        ))}
       </ul>
     </div>
   );
